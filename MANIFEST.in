@@ -1,0 +1,18 @@
+include MANIFEST.in
+include requirements.txt
+include *.json
+include *.md
+include *.py
+include *.txt
+recursive-include frappe_telegram *.css
+recursive-include frappe_telegram *.csv
+recursive-include frappe_telegram *.html
+recursive-include frappe_telegram *.ico
+recursive-include frappe_telegram *.js
+recursive-include frappe_telegram *.json
+recursive-include frappe_telegram *.md
+recursive-include frappe_telegram *.png
+recursive-include frappe_telegram *.py
+recursive-include frappe_telegram *.svg
+recursive-include frappe_telegram *.txt
+recursive-exclude frappe_telegram *.pyc
