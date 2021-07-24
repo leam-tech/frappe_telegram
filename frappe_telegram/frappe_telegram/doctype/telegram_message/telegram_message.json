@@ -1,0 +1,82 @@
+{
+ "actions": [],
+ "creation": "2021-07-24 10:31:52.695294",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "chat",
+  "message_id",
+  "content",
+  "column_break_3",
+  "from_user",
+  "from_bot"
+ ],
+ "fields": [
+  {
+   "fieldname": "chat",
+   "fieldtype": "Link",
+   "in_list_view": 1,
+   "label": "Chat",
+   "options": "Telegram Chat",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "content",
+   "fieldtype": "Small Text",
+   "label": "Content",
+   "read_only": 1,
+   "reqd": 1
+  },
+  {
+   "fieldname": "column_break_3",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "from_user",
+   "fieldtype": "Link",
+   "label": "From User",
+   "options": "Telegram User",
+   "read_only": 1
+  },
+  {
+   "fieldname": "from_bot",
+   "fieldtype": "Link",
+   "label": "From Bot",
+   "options": "Telegram Bot",
+   "read_only": 1
+  },
+  {
+   "fieldname": "message_id",
+   "fieldtype": "Data",
+   "label": "Message ID",
+   "read_only": 1,
+   "reqd": 1
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "links": [],
+ "modified": "2021-07-24 10:42:42.678927",
+ "modified_by": "Administrator",
+ "module": "Frappe Telegram",
+ "name": "Telegram Message",
+ "owner": "Administrator",
+ "permissions": [
+  {
+   "create": 1,
+   "delete": 1,
+   "email": 1,
+   "export": 1,
+   "print": 1,
+   "read": 1,
+   "report": 1,
+   "role": "System Manager",
+   "share": 1,
+   "write": 1
+  }
+ ],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
