@@ -4,5 +4,7 @@
 # import frappe
 from frappe.model.document import Document
 
+
 class TelegramBot(Document):
-	pass
+    def autoname(self):
+        self.name = self.title.replace(" ", "-")
