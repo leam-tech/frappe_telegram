@@ -12,8 +12,8 @@ def _start(update: Update, context):
     update.message.reply_text("Heylllo")
 
 
-def start_polling(bot_doc: Union[str, TelegramBot], poll_interval: int = 0):
-    updater = get_bot(bot_doc=bot_doc)
+def start_polling(site: str, bot_doc: Union[str, TelegramBot], poll_interval: int = 0):
+    updater = get_bot(bot_doc=bot_doc, site=site)
 
     updater.dispatcher.add_handler(CommandHandler("start", _start))
 
@@ -22,11 +22,12 @@ def start_polling(bot_doc: Union[str, TelegramBot], poll_interval: int = 0):
 
 
 def start_webhook(
+        site: str,
         bot_doc: Union[str, TelegramBot],
         listen_host: str = "127.0.0.1",
         webhook_port: int = 80,
         webhook_url: str = None):
-    updater = get_bot(bot_doc=bot_doc)
+    updater = get_bot(bot_doc=bot_doc, site=site)
     updater.start_webhook(
         listen=listen_host,
         port=webhook_port,
@@ -34,12 +35,21 @@ def start_webhook(
     )
 
 
-def get_bot(bot_doc: Union[str, TelegramBot]) -> Updater:
-    if isinstance(bot_doc, str):
-        bot_doc = frappe.get_doc("Telegram Bot", bot_doc)
+def get_bot(bot_doc: Union[str, TelegramBot], site=frappe.local.site) -> Updater:
+    from contextlib import ExitStack
+    with frappe.init_site(site) if not frappe.db else ExitStack():
+        if not frappe.db:
+            frappe.connect()
 
-    if frappe.db:
+        if isinstance(bot_doc, str):
+            bot_doc = frappe.get_doc("Telegram Bot", bot_doc)
+
         token = bot_doc.get_password("api_token")
-    else:
-        token = bot_doc.get("api_token")
-    return Updater(token=token)
+
+        updater = Updater(token=token)
+        handlers = frappe.get_hooks("telegram_bot_handler")
+        if isinstance(handlers, dict):
+            handlers = handlers[bot_doc.name]
+
+        for cmd in handlers:
+            frappe.get_attr(cmd)(botname=bot_doc.name, updater=updater)

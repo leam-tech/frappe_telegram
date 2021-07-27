@@ -36,16 +36,6 @@ def start_bot(
         botname: The name of 'Telegram Bot' to start
     """
     site = get_site(context)
-    frappe.init(site=site)
-    frappe.connect()
-
-    if not frappe.db.exists("Telegram Bot", botname):
-        raise frappe.DoesNotExistError("Telegram Bot {} do not exist".format(botname))
-
-    bot_doc = frappe.get_doc("Telegram Bot", botname)
-    bot_doc.api_token = bot_doc.get_password("api_token")
-
-    frappe.destroy()
 
     if not polling and not webhook:
         print("Starting {} in polling mode".format(botname))
@@ -60,9 +50,11 @@ def start_bot(
     )
 
     if polling:
-        start_polling(bot_doc=bot_doc, poll_interval=poll_interval)
+        start_polling(site=site, botname=botname, poll_interval=poll_interval)
     elif webhook:
-        start_webhook(bot_doc=bot_doc, webhook_port=webhook_port, webhook_url=webhook_url)
+        start_webhook(
+            site=site, botname=botname,
+            webhook_port=webhook_port, webhook_url=webhook_url)
 
 
 @click.command("setup-supervisor")
