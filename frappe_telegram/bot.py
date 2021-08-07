@@ -41,12 +41,38 @@ def get_bot(telegram_bot: Union[str, TelegramBot], site=None) -> Updater:
 
         token = telegram_bot.get_password("api_token")
 
-        updater = Updater(token=token)
+        updater = make_bot(token=token, site=site)
         handlers = frappe.get_hooks("telegram_bot_handler")
         if isinstance(handlers, dict):
             handlers = handlers[telegram_bot.name]
 
         for cmd in handlers:
-            frappe.get_attr(cmd)(botname=telegram_bot.name, updater=updater)
+            frappe.get_attr(cmd)(telegram_bot=telegram_bot, updater=updater)
 
+    return updater
+
+
+def make_bot(token: str, site: str) -> Updater:
+    """
+    Returns a custom TelegramUpdater with FrappeTelegramDispatcher
+    """
+    from .dispatcher import FrappeTelegramDispatcher
+
+    updater = Updater(token=token)
+    original_dispatcher = updater.dispatcher
+
+    frappe_dispatcher = FrappeTelegramDispatcher(
+        site,
+        updater.bot,
+        updater.update_queue,
+        job_queue=updater.job_queue,
+        workers=original_dispatcher.workers,
+        # Class attributes that starts with __ is Mangled
+        exception_event=updater._Updater__exception_event,
+        persistence=original_dispatcher.persistence,
+        use_context=original_dispatcher.use_context,
+        context_types=original_dispatcher.context_types,
+    )
+    updater.dispatcher = frappe_dispatcher
+    updater.job_queue.set_dispatcher(frappe_dispatcher)
     return updater

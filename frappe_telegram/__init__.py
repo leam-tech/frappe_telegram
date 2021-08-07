@@ -5,6 +5,7 @@ from telegram import (  # noqa
   Update, Message
 )
 from telegram.ext import (  # noqa
-  Updater, Dispatcher, CallbackContext,
+  Updater, CallbackContext,
   CommandHandler, CallbackQueryHandler,
 )
+from .dispatcher import FrappeTelegramDispatcher as Dispatcher  # noqa
