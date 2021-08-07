@@ -35,7 +35,10 @@ def start_webhook(
     )
 
 
-def get_bot(bot_doc: Union[str, TelegramBot], site=frappe.local.site) -> Updater:
+def get_bot(bot_doc: Union[str, TelegramBot], site=None) -> Updater:
+    if not site:
+        site = frappe.local.site
+
     from contextlib import ExitStack
     with frappe.init_site(site) if not frappe.db else ExitStack():
         if not frappe.db:

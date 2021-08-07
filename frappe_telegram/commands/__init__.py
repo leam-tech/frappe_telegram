@@ -57,6 +57,21 @@ def start_bot(
             webhook_port=webhook_port, webhook_url=webhook_url)
 
 
+@click.command("list-bots")
+@pass_context
+def list_bots(context):
+    site = get_site(context=context)
+    frappe.init(site=site)
+    frappe.connect()
+
+    bots = frappe.get_all("Telegram Bot", fields=["name"])
+    print("No. of Telegram Bots:", len(bots))
+    for bot in bots:
+        print("-", bot.name)
+
+    frappe.destroy()
+
+
 @click.command("setup-supervisor")
 @click.argument("botname")
 @click.option("--polling", is_flag=True, help="Start bot in Polling Mode")
@@ -110,6 +125,7 @@ def remove_supervisor(context, botname):
 
 
 telegram.add_command(start_bot)
+telegram.add_command(list_bots)
 telegram.add_command(setup_supervisor)
 telegram.add_command(remove_supervisor)
 commands = [telegram]
