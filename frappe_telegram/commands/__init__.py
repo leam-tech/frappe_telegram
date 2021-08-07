@@ -14,7 +14,7 @@ def telegram():
 
 
 @click.command("start-bot")
-@click.argument("botname")
+@click.argument("telegram_bot")
 @click.option("--polling", is_flag=True, help="Start bot in Polling Mode")
 @click.option("--poll-interval", type=float, default=0,
               help="Time interval between each poll. Default is 0")
@@ -25,7 +25,7 @@ def telegram():
               help="Explicitly specify webhook URL. Useful for NAT, reverse-proxy etc")
 @pass_context
 def start_bot(
-        context, botname,
+        context, telegram_bot,
         polling=False, poll_interval=0,
         webhook=False, webhook_port=8080, webhook_url=None):
     """
@@ -33,12 +33,12 @@ def start_bot(
 
     \b
     Args:
-        botname: The name of 'Telegram Bot' to start
+        telegram_bot: The name of 'Telegram Bot' to start
     """
     site = get_site(context)
 
     if not polling and not webhook:
-        print("Starting {} in polling mode".format(botname))
+        print("Starting {} in polling mode".format(telegram_bot))
         polling = True
 
     if webhook and not webhook_port:
@@ -50,10 +50,10 @@ def start_bot(
     )
 
     if polling:
-        start_polling(site=site, botname=botname, poll_interval=poll_interval)
+        start_polling(site=site, telegram_bot=telegram_bot, poll_interval=poll_interval)
     elif webhook:
         start_webhook(
-            site=site, botname=botname,
+            site=site, telegram_bot=telegram_bot,
             webhook_port=webhook_port, webhook_url=webhook_url)
 
 
@@ -72,8 +72,8 @@ def list_bots(context):
     frappe.destroy()
 
 
-@click.command("setup-supervisor")
-@click.argument("botname")
+@click.command("supervisor-add")
+@click.argument("telegram_bot")
 @click.option("--polling", is_flag=True, help="Start bot in Polling Mode")
 @click.option("--poll-interval", type=float, default=0,
               help="Time interval between each poll. Default is 0")
@@ -83,8 +83,8 @@ def list_bots(context):
 @click.option("--webhook-url", type=str,
               help="Explicitly specify webhook URL. Useful for NAT, reverse-proxy etc")
 @pass_context
-def setup_supervisor(
-        context, botname,
+def supervisor_add(
+        context, telegram_bot,
         polling=False, poll_interval=0,
         webhook=False, webhook_port=8080, webhook_url=None):
     """
@@ -98,34 +98,34 @@ def setup_supervisor(
         webhook_port = 8080
 
     add_supervisor_entry(
-        botname=botname, polling=polling, poll_interval=poll_interval,
+        telegram_bot=telegram_bot, polling=polling, poll_interval=poll_interval,
         webhook=webhook, webhook_port=webhook_port, webhook_url=webhook_url)
 
     frappe.destroy()
 
 
-@click.command("remove-supervisor")
-@click.argument("botname")
+@click.command("supervisor-remove")
+@click.argument("telegram_bot")
 @pass_context
-def remove_supervisor(context, botname):
+def supervisor_remove(context, telegram_bot):
     """
     Removes supervisor entry of specific bot
 
     \b
     Args:
-        botname: The name of 'Telegram Bot' to remove
+        telegram_bot: The name of 'Telegram Bot' to remove
     """
     site = get_site(context)
     frappe.init(site=site)
     frappe.connect()
 
-    remove_supervisor_entry(botname=botname)
+    remove_supervisor_entry(telegram_bot=telegram_bot)
 
     frappe.destroy()
 
 
 telegram.add_command(start_bot)
 telegram.add_command(list_bots)
-telegram.add_command(setup_supervisor)
-telegram.add_command(remove_supervisor)
+telegram.add_command(supervisor_add)
+telegram.add_command(supervisor_remove)
 commands = [telegram]

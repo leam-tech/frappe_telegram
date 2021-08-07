@@ -4,18 +4,10 @@ from telegram.ext import Updater
 
 import frappe
 from frappe_telegram.frappe_telegram.doctype import TelegramBot
-from telegram.ext.commandhandler import CommandHandler
-from telegram.update import Update
 
 
-def _start(update: Update, context):
-    update.message.reply_text("Heylllo")
-
-
-def start_polling(site: str, bot_doc: Union[str, TelegramBot], poll_interval: int = 0):
-    updater = get_bot(bot_doc=bot_doc, site=site)
-
-    updater.dispatcher.add_handler(CommandHandler("start", _start))
+def start_polling(site: str, telegram_bot: Union[str, TelegramBot], poll_interval: int = 0):
+    updater = get_bot(telegram_bot=telegram_bot, site=site)
 
     updater.start_polling(poll_interval=poll_interval)
     updater.idle()
@@ -23,11 +15,11 @@ def start_polling(site: str, bot_doc: Union[str, TelegramBot], poll_interval: in
 
 def start_webhook(
         site: str,
-        bot_doc: Union[str, TelegramBot],
+        telegram_bot: Union[str, TelegramBot],
         listen_host: str = "127.0.0.1",
         webhook_port: int = 80,
         webhook_url: str = None):
-    updater = get_bot(bot_doc=bot_doc, site=site)
+    updater = get_bot(telegram_bot=telegram_bot, site=site)
     updater.start_webhook(
         listen=listen_host,
         port=webhook_port,
@@ -35,7 +27,7 @@ def start_webhook(
     )
 
 
-def get_bot(bot_doc: Union[str, TelegramBot], site=None) -> Updater:
+def get_bot(telegram_bot: Union[str, TelegramBot], site=None) -> Updater:
     if not site:
         site = frappe.local.site
 
@@ -44,15 +36,17 @@ def get_bot(bot_doc: Union[str, TelegramBot], site=None) -> Updater:
         if not frappe.db:
             frappe.connect()
 
-        if isinstance(bot_doc, str):
-            bot_doc = frappe.get_doc("Telegram Bot", bot_doc)
+        if isinstance(telegram_bot, str):
+            telegram_bot = frappe.get_doc("Telegram Bot", telegram_bot)
 
-        token = bot_doc.get_password("api_token")
+        token = telegram_bot.get_password("api_token")
 
         updater = Updater(token=token)
         handlers = frappe.get_hooks("telegram_bot_handler")
         if isinstance(handlers, dict):
-            handlers = handlers[bot_doc.name]
+            handlers = handlers[telegram_bot.name]
 
         for cmd in handlers:
-            frappe.get_attr(cmd)(botname=bot_doc.name, updater=updater)
+            frappe.get_attr(cmd)(botname=telegram_bot.name, updater=updater)
+
+    return updater

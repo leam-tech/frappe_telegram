@@ -11,13 +11,13 @@ We will have a new process group for all the telegram-bots
 
 
 def add_supervisor_entry(
-        botname, polling=False, poll_interval=0,
+        telegram_bot, polling=False, poll_interval=0,
         webhook=False, webhook_port=0, webhook_url=None):
     config = get_supervisor_config()
 
     # Program
     program_name, program = get_bot_program(
-        config=config, botname=botname, polling=polling, poll_interval=poll_interval,
+        config=config, telegram_bot=telegram_bot, polling=polling, poll_interval=poll_interval,
         webhook=webhook, webhook_port=webhook_port, webhook_url=webhook_url)
 
     config[program_name] = program
@@ -34,11 +34,11 @@ def add_supervisor_entry(
     write_supervisor_config(config)
 
 
-def remove_supervisor_entry(botname):
+def remove_supervisor_entry(telegram_bot):
     config = get_supervisor_config()
 
     # Remove Program Entry
-    program_name = get_bot_program_name(botname)
+    program_name = get_bot_program_name(telegram_bot)
     if program_name in config:
         del config[program_name]
 
@@ -58,9 +58,9 @@ def remove_supervisor_entry(botname):
     write_supervisor_config(config)
 
 
-def get_bot_program(config, botname, **kwargs):
-    program_name = get_bot_program_name(botname)
-    logs = get_bot_log_paths(botname)
+def get_bot_program(config, telegram_bot, **kwargs):
+    program_name = get_bot_program_name(telegram_bot)
+    logs = get_bot_log_paths(telegram_bot)
 
     command = "bench telegram start-bot"
     for k, v in kwargs.items():
@@ -111,16 +111,16 @@ def guess_user_from_web_program(config: configparser.ConfigParser):
     return config[web_program_name]["user"]
 
 
-def get_bot_log_paths(botname):
+def get_bot_log_paths(telegram_bot):
     logs_path = os.path.abspath(os.path.join(get_bench_dir(), "logs"))
-    stdout = os.path.join(logs_path, f"bot-{botname}.log")
-    stderr = os.path.join(logs_path, f"bot-{botname}.error.log")
+    stdout = os.path.join(logs_path, f"bot-{telegram_bot}.log")
+    stderr = os.path.join(logs_path, f"bot-{telegram_bot}.error.log")
 
     return stdout, stderr
 
 
-def get_bot_program_name(botname):
-    return f"program:{get_bench_name()}-telegram-bot-{botname}"
+def get_bot_program_name(telegram_bot):
+    return f"program:{get_bench_name()}-telegram-bot-{telegram_bot}"
 
 
 def get_bot_group_name():
