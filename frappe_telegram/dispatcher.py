@@ -34,7 +34,7 @@ class FrappeTelegramDispatcher(Dispatcher):
         from queue import Empty
         from uuid import uuid4
 
-        print("Using Patched Telegram Dispatcher ✅")
+        print("Using Patched Frappe Telegram Dispatcher ✅")
 
         if self.running:
             self.logger.warning('already running')
@@ -72,6 +72,7 @@ class FrappeTelegramDispatcher(Dispatcher):
             self.logger.debug('Processing Update: %s', update)
             self.process_update(update)
             self.update_queue.task_done()
+            frappe.db.commit()
             frappe.destroy()
 
         self.running = False
