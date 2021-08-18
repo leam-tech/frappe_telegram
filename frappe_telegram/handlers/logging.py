@@ -6,6 +6,10 @@ def logger_handler(update: Update, context: CallbackContext):
     if not hasattr(update, "effective_user"):
         return
     context.telegram_user = get_telegram_user(update)
+    context.telegram_chat = get_telegram_chat(update)
+    if context.telegram_chat and context.telegram_user:
+        context.telegram_message = get_telegram_message(
+            update, context.telegram_chat, context.telegram_user)
 
 
 def get_telegram_user(update: Update):
@@ -27,3 +31,33 @@ def get_telegram_user(update: Update):
     frappe.db.commit()
 
     return user
+
+
+def get_telegram_chat(update: Update):
+    if not update.effective_chat:
+        return
+
+    telegram_chat = update.effective_chat
+    chat = frappe.db.get_value("Telegram Chat", {"chat_id": telegram_chat.id})
+    if chat:
+        chat = frappe.get_cached_doc("Telegram Chat", chat)
+    else:
+        chat = frappe.get_doc(
+            doctype="Telegram Chat", chat_id=telegram_chat.id,
+            title=telegram_chat.title or telegram_chat.username or telegram_chat.first_name,
+            type=telegram_chat.type, users=[]
+        )
+        chat.insert(ignore_permissions=True)
+
+    return chat
+
+
+def get_telegram_message(update: Update, telegram_chat, telegram_user):
+    if not update.effective_message:
+        return
+
+    telegram_message = update.effective_message
+    msg = frappe.get_doc(
+        doctype="Telegram Message", chat=telegram_chat.name, message_id=telegram_message.message_id,
+        content=telegram_message.text, from_user=telegram_user.name)
+    msg.insert(ignore_permissions=True)

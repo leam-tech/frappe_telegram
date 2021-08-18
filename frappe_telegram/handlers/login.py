@@ -60,8 +60,10 @@ def collect_email_and_ask_for_pwd(update: Update, context: CallbackContext):
 
     user = verify_credentials(context.user_data["email"], update.message.text)
     if user and user.is_authenticated:
+        # Authenticated! Lets link FrappeUser & TelegramUser
         update.message.reply_text("You have successfully logged in as: " + user.name)
         context.telegram_user.db_set("user", user.name)
+        frappe.clear_document_cache(context.telegram_user.doctype, context.telegram_user.name)
         raise DispatcherHandlerStop(state=ConversationHandler.END)
     else:
         del context.user_data["email"]
