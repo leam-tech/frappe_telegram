@@ -40,9 +40,7 @@ def get_bot(telegram_bot: Union[str, TelegramBot], site=None) -> Updater:
         if isinstance(telegram_bot, str):
             telegram_bot = frappe.get_doc("Telegram Bot", telegram_bot)
 
-        token = telegram_bot.get_password("api_token")
-
-        updater = make_bot(token=token, site=site)
+        updater = make_bot(telegram_bot=telegram_bot, site=site)
         # dispatcher = updater.dispatcher
 
         handlers = frappe.get_hooks("telegram_bot_handler")
@@ -54,27 +52,20 @@ def get_bot(telegram_bot: Union[str, TelegramBot], site=None) -> Updater:
     return updater
 
 
-def make_bot(token: str, site: str) -> Updater:
+def make_bot(telegram_bot: TelegramBot, site: str) -> Updater:
     """
     Returns a custom TelegramUpdater with FrappeTelegramDispatcher
     """
-    from .dispatcher import FrappeTelegramDispatcher
+    from .overrides import FrappeTelegramDispatcher, FrappeTelegramExtBot
 
-    updater = Updater(token=token)
-    original_dispatcher = updater.dispatcher
+    updater = Updater(token=telegram_bot.get_password("api_token"))
 
-    frappe_dispatcher = FrappeTelegramDispatcher(
-        site,
-        updater.bot,
-        updater.update_queue,
-        job_queue=updater.job_queue,
-        workers=original_dispatcher.workers,
-        # Class attributes that starts with __ is Mangled
-        exception_event=updater._Updater__exception_event,
-        persistence=original_dispatcher.persistence,
-        use_context=original_dispatcher.use_context,
-        context_types=original_dispatcher.context_types,
-    )
+    # Override Dispatcher
+    frappe_dispatcher = FrappeTelegramDispatcher.make(
+        site=site, updater=updater)
     updater.dispatcher = frappe_dispatcher
     updater.job_queue.set_dispatcher(frappe_dispatcher)
+
+    # Override ExtBot
+    updater.bot = FrappeTelegramExtBot.make(telegram_bot=telegram_bot.name, updater=updater)
     return updater

@@ -1,5 +1,6 @@
+from typing import Union
 import frappe
-from frappe_telegram import Update, CallbackContext
+from frappe_telegram import Update, CallbackContext, Message
 
 
 def logger_handler(update: Update, context: CallbackContext):
@@ -10,6 +11,17 @@ def logger_handler(update: Update, context: CallbackContext):
     if context.telegram_chat and context.telegram_user:
         context.telegram_message = get_telegram_message(
             update, context.telegram_chat, context.telegram_user)
+
+
+def log_outgoing_message(telegram_bot: str, result: Union[bool, Message]):
+    if not isinstance(result, Message):
+        return
+    msg = frappe.get_doc(
+        doctype="Telegram Message",
+        chat=frappe.db.get_value("Telegram Chat", {"chat_id": result.chat_id}),
+        message_id=result.message_id,
+        content=result.text, from_bot=telegram_bot)
+    msg.insert(ignore_permissions=True)
 
 
 def get_telegram_user(update: Update):
