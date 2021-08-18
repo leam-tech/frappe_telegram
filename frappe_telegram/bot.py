@@ -32,6 +32,7 @@ def get_bot(telegram_bot: Union[str, TelegramBot], site=None) -> Updater:
         site = frappe.local.site
 
     from contextlib import ExitStack
+
     with frappe.init_site(site) if not frappe.db else ExitStack():
         if not frappe.db:
             frappe.connect()
@@ -42,10 +43,11 @@ def get_bot(telegram_bot: Union[str, TelegramBot], site=None) -> Updater:
         token = telegram_bot.get_password("api_token")
 
         updater = make_bot(token=token, site=site)
+        # dispatcher = updater.dispatcher
+
         handlers = frappe.get_hooks("telegram_bot_handler")
         if isinstance(handlers, dict):
             handlers = handlers[telegram_bot.name]
-
         for cmd in handlers:
             frappe.get_attr(cmd)(telegram_bot=telegram_bot, updater=updater)
 

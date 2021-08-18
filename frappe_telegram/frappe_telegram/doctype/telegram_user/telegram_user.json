@@ -9,7 +9,8 @@
   "telegram_user_id",
   "telegram_username",
   "column_break_4",
-  "user"
+  "user",
+  "is_guest"
  ],
  "fields": [
   {
@@ -39,12 +40,18 @@
   {
    "fieldname": "column_break_4",
    "fieldtype": "Column Break"
+  },
+  {
+   "default": "0",
+   "fieldname": "is_guest",
+   "fieldtype": "Check",
+   "label": "Is Guest"
   }
  ],
  "in_create": 1,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-07-24 10:18:48.529162",
+ "modified": "2021-08-15 06:29:30.857348",
  "modified_by": "Administrator",
  "module": "Frappe Telegram",
  "name": "Telegram User",

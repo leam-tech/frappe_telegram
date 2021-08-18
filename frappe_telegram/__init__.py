@@ -2,10 +2,10 @@
 __version__ = '0.0.1'
 
 from telegram import (  # noqa
-  Update, Message
+  Update, Message, InlineKeyboardButton, InlineKeyboardMarkup
 )
 from telegram.ext import (  # noqa
-  Updater, CallbackContext,
-  CommandHandler, CallbackQueryHandler,
+  Updater, CallbackContext, Handler,
+  MessageHandler, CommandHandler, CallbackQueryHandler,
+  DispatcherHandlerStop, ConversationHandler
 )
-from .dispatcher import FrappeTelegramDispatcher as Dispatcher  # noqa

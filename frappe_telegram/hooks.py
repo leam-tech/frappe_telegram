@@ -16,6 +16,16 @@ fixtures = [
         "filters": [["name", "in", ["Telegram Bot Manager", "Telegram Bot User"]]]
     }
 ]
+
+telegram_bot_handler = [
+    "frappe_telegram.handlers.login.setup",
+    "frappe_telegram.handlers.auth.setup",
+]
+
+telegram_pre_process_update = [
+    "frappe_telegram.handlers.logging.logger_handler",
+]
+
 # Includes in <head>
 # ------------------
 
