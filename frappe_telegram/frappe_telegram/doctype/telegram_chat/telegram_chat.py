@@ -4,5 +4,7 @@
 # import frappe
 from frappe.model.document import Document
 
+
 class TelegramChat(Document):
-	pass
+    def validate(self):
+        pass

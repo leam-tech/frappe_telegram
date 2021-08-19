@@ -10,6 +10,7 @@
   "title",
   "column_break_3",
   "type",
+  "last_message_on",
   "section_break_3",
   "users"
  ],
@@ -51,11 +52,17 @@
    "label": "Type",
    "options": "private\ngroup\nsupergroup\nchannel",
    "read_only": 1
+  },
+  {
+   "fieldname": "last_message_on",
+   "fieldtype": "Datetime",
+   "label": "Last Message On",
+   "read_only": 1
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-07-24 10:40:56.457122",
+ "modified": "2021-08-19 09:33:03.736413",
  "modified_by": "Administrator",
  "module": "Frappe Telegram",
  "name": "Telegram Chat",
