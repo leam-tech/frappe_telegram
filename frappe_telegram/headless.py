@@ -1,6 +1,12 @@
 import frappe
 from frappe_telegram.handlers.logging import log_outgoing_message
 
+"""
+The functions defined here is provided to invoke the bot
+without Updaters & Dispatchers. This is helpful for triggering
+bot interactions via Hooks / Controller methods
+"""
+
 
 def send_message(message_text: str, user=None, telegram_user=None, from_bot=None):
     telegram_user_id = get_telegram_user_id(user=user, telegram_user=telegram_user)
