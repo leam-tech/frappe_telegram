@@ -1,0 +1,27 @@
+{
+ "content": null,
+ "creation": "2021-08-19 06:49:00.208544",
+ "docstatus": 0,
+ "doctype": "Page",
+ "icon": "chat",
+ "idx": 0,
+ "modified": "2021-08-19 06:49:00.208544",
+ "modified_by": "Administrator",
+ "module": "Frappe Telegram",
+ "name": "telegram-chat-view",
+ "owner": "Administrator",
+ "page_name": "telegram-chat-view",
+ "roles": [
+  {
+   "role": "Telegram Bot Manager"
+  },
+  {
+   "role": "Telegram Bot User"
+  }
+ ],
+ "script": null,
+ "standard": "Yes",
+ "style": null,
+ "system_page": 0,
+ "title": "Telegram Chat"
+}

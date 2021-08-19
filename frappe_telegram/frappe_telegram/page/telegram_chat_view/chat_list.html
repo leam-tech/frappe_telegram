@@ -1,0 +1,18 @@
+<div class="telegram-chat-list">
+  {% for (var i = 0; i < chat_list.length; i++) { var chat = chat_list[i]; %}
+  <div
+    class="chat-room my-2 p-3 d-flex align-items-center"
+    style="cursor: pointer; background: var(--control-bg)"
+    data-chat-id="{{chat.chat_id}}"
+  >
+    <div class="mr-3">{{ frappe.avatar(chat.title, "avatar-medium") }}</div>
+    <div class="flex-grow-1">
+      <div class="h4">{{ chat.title }}</div>
+      <div class="text-muted">{{ chat.last_message_content }}</div>
+    </div>
+    <div class="text-muted ellipsis">
+      {{ comment_when(chat.last_message_on, true) }}
+    </div>
+  </div>
+  {% } %}
+</div>

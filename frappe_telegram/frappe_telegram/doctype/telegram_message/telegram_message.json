@@ -26,6 +26,7 @@
    "fieldname": "content",
    "fieldtype": "Small Text",
    "label": "Content",
+   "length": 4096,
    "read_only": 1,
    "reqd": 1
   },
@@ -57,7 +58,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-07-24 10:42:42.678927",
+ "modified": "2021-08-19 11:50:28.085333",
  "modified_by": "Administrator",
  "module": "Frappe Telegram",
  "name": "Telegram Message",

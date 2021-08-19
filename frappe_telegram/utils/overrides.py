@@ -128,6 +128,16 @@ class FrappeTelegramDispatcher(Dispatcher):
                     frappe.get_attr(cmd)(update, context)
             except DispatcherHandlerStop:
                 self.logger.debug('Stopping further handlers due to DispatcherHandlerStop')
+            # Dispatch any error.
+            except Exception as exc:
+                try:
+                    self.dispatch_error(update, exc)
+                except DispatcherHandlerStop:
+                    self.logger.debug('Error handler stopped further handlers')
+                    break
+                # Errors should not stop the thread.
+                except Exception:
+                    self.logger.exception('An uncaught error was raised while handling the error.')
 
             self.update_queue.task_done()
             frappe.db.commit()

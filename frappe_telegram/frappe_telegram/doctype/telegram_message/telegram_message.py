@@ -12,4 +12,5 @@ class TelegramMessage(Document):
     def update_last_message_on(self):
         chat = frappe.get_doc("Telegram Chat", self.chat)
         chat.last_message_on = self.creation
+        chat.last_message_content = self.content
         chat.save(ignore_permissions=True)

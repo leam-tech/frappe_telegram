@@ -1,0 +1,23 @@
+<div class="chat-message my-1" data-message-id="{{ msg.message_id }}">
+  {% if (msg.from_user) %}
+  <div class="d-flex align-items-center justify-content-start">
+    <div>{{ frappe.avatar(msg.from_user) }}</div>
+    <div class="ml-3 p-3" style="background-color: var(--control-bg); border-radius: 1em; box-shadow: 10px 25px 35px -15px rgba(0,0,0,0.6);">
+      {{ msg.content }}
+      <div class="d-inline ml-2 text-small text-muted">
+        {{ comment_when(msg.creation, true) }}
+      </div>
+    </div>
+  </div>
+  {% } else { %}
+  <div class="d-flex align-items-center justify-content-end">
+    <div class="mr-3 p-3" style="background-color: var(--control-bg); border-radius: 1em; box-shadow: 10px 25px 35px -15px rgba(0,0,0,0.6);">
+      {{ msg.content }}
+      <div class="d-inline ml-2 text-small text-muted">
+        {{ comment_when(msg.creation, true) }}
+      </div>
+    </div>
+    <div>{{ frappe.avatar(msg.from_user) }}</div>
+  </div>
+  {% } %}
+</div>
