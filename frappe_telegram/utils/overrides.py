@@ -9,6 +9,7 @@ from frappe_telegram.handlers.logging import log_outgoing_message
 For each incoming Update, we will have frappe initialized.
 We will override Dispatcher and Bot instance
 - Dispatcher is overridden for initializing frappe for each incoming Update
+  and to receive notifications from web processes
 - Bot is overridden for loggign outgoing messages
 NOTE:
     Class attributes that starts with __ is Mangled

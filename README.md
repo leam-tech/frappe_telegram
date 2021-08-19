@@ -9,8 +9,8 @@ Telegram Bot Manager for Frappe
 - ✅ Custom Bot implementations via Hooks
 - ✅ Links Telegram User to frappe-user
 - ✅ Tracks Chats and contained messages
-- ⌛ Supports invoking the bot via frappe hooks / controller methods
-- ⌛ Saves persistent capable data to database
+- ✅ Supports sending messages from bot via frappe hooks / controller methods
+
 
 #### License
 

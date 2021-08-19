@@ -9,3 +9,4 @@ from telegram.ext import (  # noqa
   MessageHandler, CommandHandler, CallbackQueryHandler,
   DispatcherHandlerStop, ConversationHandler
 )
+from frappe_telegram.utils.message import send_message  # noqa

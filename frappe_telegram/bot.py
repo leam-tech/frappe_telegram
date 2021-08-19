@@ -56,7 +56,7 @@ def make_bot(telegram_bot: TelegramBot, site: str) -> Updater:
     """
     Returns a custom TelegramUpdater with FrappeTelegramDispatcher
     """
-    from .overrides import FrappeTelegramDispatcher, FrappeTelegramExtBot
+    from .utils.overrides import FrappeTelegramDispatcher, FrappeTelegramExtBot
 
     updater = Updater(token=telegram_bot.get_password("api_token"))
 
