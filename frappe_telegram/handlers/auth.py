@@ -7,7 +7,6 @@ AUTH_HANDLER_GROUP = -100
 
 def setup(telegram_bot, updater: Updater):
     from .auth import AUTH_HANDLER_GROUP
-    print("auth setup")
     updater.dispatcher.add_handler(MessageHandler(None, authenticate), group=AUTH_HANDLER_GROUP)
 
 

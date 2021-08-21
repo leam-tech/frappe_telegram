@@ -4,6 +4,8 @@ from telegram.ext import Updater
 
 import frappe
 from frappe_telegram.frappe_telegram.doctype import TelegramBot
+from telegram.ext.dispatcher import Dispatcher
+from telegram.ext.messagehandler import MessageHandler
 
 
 def start_polling(site: str, telegram_bot: Union[str, TelegramBot], poll_interval: int = 0):
@@ -49,6 +51,8 @@ def get_bot(telegram_bot: Union[str, TelegramBot], site=None) -> Updater:
         for cmd in handlers:
             frappe.get_attr(cmd)(telegram_bot=telegram_bot, updater=updater)
 
+        attach_update_processors(dispatcher=updater.dispatcher)
+
     return updater
 
 
@@ -69,3 +73,16 @@ def make_bot(telegram_bot: TelegramBot, site: str) -> Updater:
     # Override ExtBot
     updater.bot = FrappeTelegramExtBot.make(telegram_bot=telegram_bot.name, updater=updater)
     return updater
+
+
+def attach_update_processors(dispatcher: Dispatcher):
+    pre_process_group = dispatcher.groups[0] - 1000
+    post_process_group = dispatcher.groups[-1] + 1000
+
+    for cmd in frappe.get_hooks("telegram_update_pre_processors"):
+        dispatcher.add_handler(MessageHandler(None, frappe.get_attr(cmd)), group=pre_process_group)
+        pre_process_group += 1
+
+    for cmd in frappe.get_hooks("telegram_update_post_processors"):
+        dispatcher.add_handler(MessageHandler(None, frappe.get_attr(cmd)), group=post_process_group)
+        post_process_group += 1

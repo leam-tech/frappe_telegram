@@ -18,11 +18,11 @@ fixtures = [
 ]
 
 telegram_bot_handler = [
-    "frappe_telegram.handlers.login.setup",
+    "frappe_telegram.handlers.login.attach_conversation_handler",
     "frappe_telegram.handlers.auth.setup",
 ]
 
-telegram_pre_process_update = [
+telegram_update_pre_processors = [
     "frappe_telegram.handlers.logging.logger_handler",
 ]
 
