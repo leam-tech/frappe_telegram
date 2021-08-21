@@ -7,7 +7,8 @@ Telegram Bot Manager for Frappe. This is a wrapper around [python-telegram-bot](
 - ✅ Multi Bot support
 - ✅ Runs the bot independently from the web server process
 - ✅ Custom Bot implementations via Hooks
-- ✅ Links Telegram User to frappe-user
+- ✅ Frappe User Login
+- ⏳ Frappe User signup
 - ✅ Tracks Chats and contained messages
 - ✅ Supports sending messages from bot via frappe hooks / controller methods
 - ⏳ Integration with frappe `Notification` doctype
