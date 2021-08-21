@@ -14,9 +14,8 @@ SIGNUP_CONV_ENTER = frappe.generate_hash()
 ENTERING_CREDENTIALS = frappe.generate_hash()
 
 
-def setup(telegram_bot, updater: Updater):
+def attach_conversation_handler(telegram_bot, updater: Updater):
     from .auth import AUTH_HANDLER_GROUP
-    print("login setup")
     # Login Conversation
     updater.dispatcher.add_handler(ConversationHandler(
         entry_points=[CallbackQueryHandler(
