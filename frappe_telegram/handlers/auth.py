@@ -19,8 +19,7 @@ def authenticate(update: Update, context: CallbackContext):
     telegram_user = frappe.db.get_value("Telegram User", {"telegram_user_id": user.id}, "*")
 
     if telegram_user and telegram_user.user:
-        print("Set-Auth")
-        update.effective_message.reply_text("Logged in as " + telegram_user.user)
+        # update.effective_message.reply_text("Logged in as " + telegram_user.user)
         frappe.set_user(telegram_user.user)
         return
 
