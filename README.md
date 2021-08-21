@@ -30,8 +30,8 @@ A simple chat-page within frappe just for your telegram-bots
 ### Guides
 - [Basic Setup](./docs/basic_setup.md)
 - [User Authentication](./docs/auth.md)
-- ⏳ Running in DEV mode
-- ⏳ Supported Hooks for Customization
+- [Running in DEV mode](./docs/dev_setup.md)
+- [Supported Hooks for Customization](./docs/hooks.md)
 - ⏳ Setting up for Production
 - ⏳ Example: Login Notifier
 - ⏳ Example: Activity Notifier
