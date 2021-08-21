@@ -10,9 +10,25 @@ Telegram Bot Manager for Frappe. This is a wrapper around [python-telegram-bot](
 - ✅ Links Telegram User to frappe-user
 - ✅ Tracks Chats and contained messages
 - ✅ Supports sending messages from bot via frappe hooks / controller methods
+- ⏳ Integration with frappe `Notification` doctype
+
+### DocTypes
+- `Telegram Bot`  
+Add all your telegram-bots here with their `api-tokens`
+- `Telegram User`  
+Any telegram-user that interacts with your bot comes here. Authentication is when `Telegram User` is linked to frappe's `User`
+- `Telegram Chat`  
+All private chats, groups where the bot gets notified comes here
+- `Telegram Message`  
+All messages - incoming & outgoing gets logged here
+
+### Page
+- `Telegram Chat View`  
+A simple chat-page within frappe just for your telegram-bots
 
 ### Guides
 - [Basic Setup](./docs/basic_setup.md)
+- [User Authentication](./docs/auth.md)
 - ⏳ Running in DEV mode
 - ⏳ Supported Hooks for Customization
 - ⏳ Setting up for Production
