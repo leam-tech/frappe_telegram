@@ -1,6 +1,5 @@
 import os
 import configparser
-from frappe.translate import get_bench_dir
 from frappe.utils import get_bench_path, get_site_path
 
 
@@ -112,7 +111,7 @@ def guess_user_from_web_program(config: configparser.ConfigParser):
 
 
 def get_bot_log_paths(telegram_bot):
-    logs_path = os.path.abspath(os.path.join(get_bench_dir(), "logs"))
+    logs_path = os.path.abspath(os.path.join("..", "logs"))
     stdout = os.path.join(logs_path, f"bot-{telegram_bot}.log")
     stderr = os.path.join(logs_path, f"bot-{telegram_bot}.error.log")
 
