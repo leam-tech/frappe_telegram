@@ -61,7 +61,7 @@ def get_bot_program(config, telegram_bot, **kwargs):
     program_name = get_bot_program_name(telegram_bot)
     logs = get_bot_log_paths(telegram_bot)
 
-    command = "bench telegram start-bot"
+    command = "bench telegram start-bot " + telegram_bot
     for k, v in kwargs.items():
         if not v:
             continue
