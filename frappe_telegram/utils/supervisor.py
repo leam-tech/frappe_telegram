@@ -66,7 +66,10 @@ def get_bot_program(config, telegram_bot, **kwargs):
         if not v:
             continue
         k = k.replace("_", "-")
-        command += f" --{k} {v}"
+        if isinstance(v, bool):
+            command += f" --{k}"
+        else:
+            command += f" --{k} {v}"
 
     program = {
         "command": command,
