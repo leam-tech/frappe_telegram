@@ -63,6 +63,8 @@ def make_bot(telegram_bot: TelegramBot, site: str) -> Updater:
     from .utils.overrides import FrappeTelegramDispatcher, FrappeTelegramExtBot
 
     updater = Updater(token=telegram_bot.get_password("api_token"))
+    # Override ExtBot
+    updater.bot = FrappeTelegramExtBot.make(telegram_bot=telegram_bot.name, updater=updater)
 
     # Override Dispatcher
     frappe_dispatcher = FrappeTelegramDispatcher.make(
@@ -70,8 +72,6 @@ def make_bot(telegram_bot: TelegramBot, site: str) -> Updater:
     updater.dispatcher = frappe_dispatcher
     updater.job_queue.set_dispatcher(frappe_dispatcher)
 
-    # Override ExtBot
-    updater.bot = FrappeTelegramExtBot.make(telegram_bot=telegram_bot.name, updater=updater)
     return updater
 
 

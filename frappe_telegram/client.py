@@ -1,3 +1,5 @@
+from telegram.bot import Bot
+
 import frappe
 from frappe_telegram.handlers.logging import log_outgoing_message
 
@@ -35,7 +37,7 @@ def get_telegram_user_id(user=None, telegram_user=None):
     return telegram_user_id
 
 
-def get_bot(telegram_bot):
+def get_bot(telegram_bot) -> Bot:
     from telegram.ext import ExtBot
     telegram_bot = frappe.get_doc("Telegram Bot", telegram_bot)
 

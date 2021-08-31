@@ -13,7 +13,9 @@
   "last_message_on",
   "last_message_content",
   "section_break_3",
-  "users"
+  "users",
+  "section_break_9",
+  "bots"
  ],
  "fields": [
   {
@@ -67,11 +69,21 @@
    "label": "Last Message Content",
    "length": 4096,
    "read_only": 1
+  },
+  {
+   "fieldname": "section_break_9",
+   "fieldtype": "Section Break"
+  },
+  {
+   "fieldname": "bots",
+   "fieldtype": "Table",
+   "label": "Bots",
+   "options": "Telegram Bot Item"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-08-19 11:54:26.519499",
+ "modified": "2021-08-31 11:29:44.881803",
  "modified_by": "Administrator",
  "module": "Frappe Telegram",
  "name": "Telegram Chat",
