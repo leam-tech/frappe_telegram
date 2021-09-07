@@ -20,6 +20,22 @@ def send_message(message_text: str, user=None, telegram_user=None, from_bot=None
     log_outgoing_message(telegram_bot=from_bot, result=message)
 
 
+def send_file(file, user=None, telegram_user=None, from_bot=None):
+    '''
+    The document argument can be either a file_id, a URL or a file from disk
+            ``open(filename, 'rb')``
+    '''
+
+    telegram_user_id = get_telegram_user_id(
+        user=user, telegram_user=telegram_user)
+    if not from_bot:
+        from_bot = frappe.get_value("Telegram Bot", {})
+
+    bot = get_bot(from_bot)
+    message = bot.send_document(telegram_user_id, document=file)
+    log_outgoing_message(telegram_bot=from_bot, result=message)
+
+
 def get_telegram_user_id(user=None, telegram_user=None):
     if not user and not telegram_user:
         frappe.throw(frappe._("Please specify either frappe-user or telegram-user"))
