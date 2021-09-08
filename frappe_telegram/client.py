@@ -19,11 +19,17 @@ def send_message(message_text: str, user=None, telegram_user=None, from_bot=None
     message = bot.send_message(telegram_user_id, text=message_text)
     log_outgoing_message(telegram_bot=from_bot, result=message)
 
-
-def send_file(file, user=None, telegram_user=None, from_bot=None):
+@frappe.whitelist(allow_guest=True)
+def send_file(file, filename=None, message=None, user=None, telegram_user=None, from_bot=None):
     '''
-    The document argument can be either a file_id, a URL or a file from disk
-            ``open(filename, 'rb')``
+    Send a file to the bot
+
+    file: (`str` | `filelike object` | `bytes` | `pathlib.Path` | `telegram.Document`)
+        The file can be either a file_id, a URL or a file from disk
+    filename: `str`
+        Specify custom file name
+    message: `str`
+        Small text to show alongside the file. 0-1024 characters
     '''
 
     telegram_user_id = get_telegram_user_id(
@@ -32,8 +38,8 @@ def send_file(file, user=None, telegram_user=None, from_bot=None):
         from_bot = frappe.get_value("Telegram Bot", {})
 
     bot = get_bot(from_bot)
-    message = bot.send_document(telegram_user_id, document=file)
-    log_outgoing_message(telegram_bot=from_bot, result=message)
+    result = bot.send_document(telegram_user_id, document=file, filename=filename, caption=message)
+    log_outgoing_message(telegram_bot=from_bot, result=result)
 
 
 def get_telegram_user_id(user=None, telegram_user=None):
