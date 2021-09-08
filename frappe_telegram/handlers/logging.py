@@ -17,11 +17,19 @@ def logger_handler(update: Update, context: CallbackContext):
 def log_outgoing_message(telegram_bot: str, result: Union[bool, Message]):
     if not isinstance(result, Message):
         return
+
+    if result.text:
+        content = result.text
+    elif result.document:
+        content = "Sent file: " + result.document.file_name
+    else:
+        content = ""
+    
     msg = frappe.get_doc(
         doctype="Telegram Message",
         chat=frappe.db.get_value("Telegram Chat", {"chat_id": result.chat_id}),
         message_id=result.message_id,
-        content=result.text, from_bot=telegram_bot)
+        content=content, from_bot=telegram_bot)
     msg.insert(ignore_permissions=True)
 
 
