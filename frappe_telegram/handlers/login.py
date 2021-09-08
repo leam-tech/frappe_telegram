@@ -70,7 +70,6 @@ def collect_email_and_ask_for_pwd(update: Update, context: CallbackContext):
         update.message.reply_text("You have entered invalid credentials. Please try again")
         return ask_email(update, context)
 
-@frappe.whitelist(allow_guest=True)
 def verify_credentials(email, pwd):
     from frappe.core.doctype.user.user import User
 
