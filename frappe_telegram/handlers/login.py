@@ -70,6 +70,7 @@ def collect_email_and_ask_for_pwd(update: Update, context: CallbackContext):
         update.message.reply_text("You have entered invalid credentials. Please try again")
         return ask_email(update, context)
 
+
 def verify_credentials(email, pwd):
     from frappe.core.doctype.user.user import User
 
@@ -77,7 +78,6 @@ def verify_credentials(email, pwd):
         user = User.find_by_credentials(email, pwd)
         return user        
     except AttributeError:
-        
         users = frappe.db.get_all('User', fields=['name', 'enabled'], or_filters=[{"name":email}], limit=1)
         if not users:
             return
