@@ -1,4 +1,5 @@
 import frappe
+from frappe.utils.password import check_password
 from frappe_telegram import (
     Update,
     CallbackContext,
@@ -72,4 +73,20 @@ def collect_email_and_ask_for_pwd(update: Update, context: CallbackContext):
 
 def verify_credentials(email, pwd):
     from frappe.core.doctype.user.user import User
-    return User.find_by_credentials(email, pwd)
+
+    try:
+        user = User.find_by_credentials(email, pwd)
+        return user        
+    except AttributeError:
+        users = frappe.db.get_all('User', fields=['name', 'enabled'], or_filters=[{"name":email}], limit=1)
+        if not users:
+            return
+
+        user = users[0]
+        user['is_authenticated'] = True
+        try:
+            check_password(user['name'], pwd)
+        except frappe.AuthenticationError:
+            user['is_authenticated'] = False
+
+        return user
