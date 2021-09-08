@@ -85,7 +85,7 @@ def verify_credentials(email, pwd):
         user = users[0]
         user['is_authenticated'] = True
         try:
-            check_password(user['name'], pwd, delete_tracker_cache=False)
+            check_password(user['name'], pwd)
         except frappe.AuthenticationError:
             user['is_authenticated'] = False
 
