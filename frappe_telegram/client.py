@@ -2,6 +2,7 @@ from telegram.bot import Bot
 
 import frappe
 from frappe_telegram.handlers.logging import log_outgoing_message
+from telegram.parsemode import ParseMode
 
 """
 The functions defined here is provided to invoke the bot
@@ -9,14 +10,32 @@ without Updaters & Dispatchers. This is helpful for triggering
 bot interactions via Hooks / Controller methods
 """
 
+def send_message(message_text: str, parse_mode=None, user=None, telegram_user=None, from_bot=None):
+    '''
+    Send a message using a bot to a Telegram User
 
-def send_message(message_text: str, user=None, telegram_user=None, from_bot=None):
+    message_text: `str`
+        A text string between 0 and 4096 characters that will be the message
+    parse_mode: `str`
+        Choose styling for your message: `markdown`, `markdown2` or `html`. Default is `None`
+    '''
+
+    if parse_mode is not None:
+        if parse_mode == "markdown":
+            parse_mode = ParseMode.MARKDOWN
+        elif parse_mode == "markdown2":
+            parse_mode = ParseMode.MARKDOWN_V2
+        elif parse_mode == "html":
+            parse_mode = ParseMode.HTML
+        else:
+            raise ValueError("Please specify a correct parse_mode.")
+
     telegram_user_id = get_telegram_user_id(user=user, telegram_user=telegram_user)
     if not from_bot:
         from_bot = frappe.get_value("Telegram Bot", {})
 
     bot = get_bot(from_bot)
-    message = bot.send_message(telegram_user_id, text=message_text)
+    message = bot.send_message(telegram_user_id, text=message_text, parse_mode=parse_mode)
     log_outgoing_message(telegram_bot=from_bot, result=message)
 
 def send_file(file, filename=None, message=None, user=None, telegram_user=None, from_bot=None):
