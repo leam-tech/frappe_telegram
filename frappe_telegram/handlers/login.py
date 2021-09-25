@@ -58,7 +58,11 @@ def collect_email_and_ask_for_pwd(update: Update, context: CallbackContext):
         update.message.reply_text("Please enter your password")
         raise DispatcherHandlerStop(state=ENTERING_CREDENTIALS)
 
-    user = verify_credentials(context.user_data["email"], update.message.text)
+    # Delete the incoming password on Client side and Mask it in logs
+    context.telegram_message.mark_as_password()
+    password = update.message.text
+
+    user = verify_credentials(context.user_data["email"], password)
     if user and user.is_authenticated:
         # Authenticated! Lets link FrappeUser & TelegramUser
         update.message.reply_text("You have successfully logged in as: " + user.name)
@@ -76,9 +80,10 @@ def verify_credentials(email, pwd):
 
     try:
         user = User.find_by_credentials(email, pwd)
-        return user        
+        return user
     except AttributeError:
-        users = frappe.db.get_all('User', fields=['name', 'enabled'], or_filters=[{"name":email}], limit=1)
+        users = frappe.db.get_all(
+            'User', fields=['name', 'enabled'], or_filters=[{"name": email}], limit=1)
         if not users:
             return
 

@@ -69,6 +69,7 @@ class FrappeTelegramDispatcher(Dispatcher):
     def process_update(self, update: object) -> None:
         try:
             frappe.init(site=self.site)
+            frappe.flags.in_telegram_update = True
             frappe.connect()
             super().process_update(update=update)
         except BaseException:
