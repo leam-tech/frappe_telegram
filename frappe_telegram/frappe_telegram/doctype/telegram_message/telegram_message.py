@@ -20,6 +20,8 @@ class TelegramMessage(Document):
         bot: Bot = chat.get_bot()
         try:
             bot.delete_message(chat_id=chat.chat_id, message_id=self.message_id)
+            # Let's also send in ***** the message to the User's Chat
+            bot.send_message(chat_id=chat.chat_id, text=self.content)
         except Exception:
             pass
 
