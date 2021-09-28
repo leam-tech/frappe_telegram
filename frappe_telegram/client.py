@@ -19,6 +19,7 @@ def send_message(message_text: str, user=None, telegram_user=None, from_bot=None
     message = bot.send_message(telegram_user_id, text=message_text)
     log_outgoing_message(telegram_bot=from_bot, result=message)
 
+
 def send_file(file, filename=None, message=None, user=None, telegram_user=None, from_bot=None):
     '''
     Send a file to the bot
