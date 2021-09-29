@@ -93,7 +93,9 @@ def collect_signup_details(update: Update, context: CallbackContext):
         enabled=1,
         new_password=details.pwd,
         send_welcome_email=0,
-    )).insert(ignore_permissions=True)
+    ))
+    user.flags.telegram_user_signup = True
+    user.insert(ignore_permissions=True)
 
     context.telegram_user.db_set("user", user.name)
     update.effective_chat.send_message(
