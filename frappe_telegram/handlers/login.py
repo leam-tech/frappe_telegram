@@ -1,30 +1,32 @@
 import frappe
 from frappe.utils.password import check_password
 from frappe_telegram import (
-    Update,
-    CallbackContext,
-    Updater, DispatcherHandlerStop,
-    InlineKeyboardMarkup, ConversationHandler,
+    Update, CallbackContext,
+    Updater, DispatcherHandlerStop, CallbackQueryHandler,
+    InlineKeyboardMarkup, ConversationHandler, MessageHandler,
     InlineKeyboardButton)
-from telegram.ext.callbackqueryhandler import CallbackQueryHandler
-from telegram.ext.messagehandler import MessageHandler
+from frappe_telegram.utils.conversation import collect_conversation_details
 
 LOGIN_CONV_ENTER = frappe.generate_hash()
 SIGNUP_CONV_ENTER = frappe.generate_hash()
 
-ENTERING_CREDENTIALS = frappe.generate_hash()
+ENTERING_LOGIN_CREDENTIALS = frappe.generate_hash()
+ENTERING_SIGNUP_DETAILS = frappe.generate_hash()
 
 
 def attach_conversation_handler(telegram_bot, updater: Updater):
     from .auth import AUTH_HANDLER_GROUP
     # Login Conversation
     updater.dispatcher.add_handler(ConversationHandler(
-        entry_points=[CallbackQueryHandler(
-            ask_email, pattern=f"^{LOGIN_CONV_ENTER}$"
-        )],
+        entry_points=[
+            CallbackQueryHandler(collect_login_credentials, pattern=f"^{LOGIN_CONV_ENTER}$"),
+            CallbackQueryHandler(collect_signup_details, pattern=f"^{SIGNUP_CONV_ENTER}$"),
+        ],
         states={
-            ENTERING_CREDENTIALS: [
-                MessageHandler(None, collect_email_and_ask_for_pwd), ]
+            ENTERING_LOGIN_CREDENTIALS: [
+                MessageHandler(None, collect_login_credentials), ],
+            ENTERING_SIGNUP_DETAILS: [
+                MessageHandler(None, collect_signup_details), ]
         },
         fallbacks=[],
     ), group=AUTH_HANDLER_GROUP)
@@ -43,36 +45,64 @@ def login_handler(update: Update, context: CallbackContext):
     raise DispatcherHandlerStop()
 
 
-def ask_email(update: Update, context: CallbackContext):
-    update.effective_message.reply_text("Please enter your Email ID")
-    raise DispatcherHandlerStop(state=ENTERING_CREDENTIALS)
+def collect_login_credentials(update: Update, context: CallbackContext):
+    details = collect_conversation_details(
+        key="login_details",
+        meta=[
+            dict(key="email", label="Email", type="regex", options=r"^.+\@.+\..+$"),
+            dict(key="pwd", label="Password", type="password"), ],
+        update=update,
+        context=context,
+    )
+    if not details.get("_is_complete"):
+        raise DispatcherHandlerStop(state=ENTERING_LOGIN_CREDENTIALS)
 
+    user = verify_credentials(details.email, details.pwd)
 
-def collect_email_and_ask_for_pwd(update: Update, context: CallbackContext):
-    if not update.message.text:
-        update.effective_message.reply_text("Please enter a valid input")
-        return
-
-    if "email" not in context.user_data:
-        context.user_data["email"] = update.message.text
-        update.message.reply_text("Please enter your password")
-        raise DispatcherHandlerStop(state=ENTERING_CREDENTIALS)
-
-    # Delete the incoming password on Client side and Mask it in logs
-    context.telegram_message.mark_as_password()
-    password = update.message.text
-
-    user = verify_credentials(context.user_data["email"], password)
     if user and user.is_authenticated:
         # Authenticated! Lets link FrappeUser & TelegramUser
         update.message.reply_text("You have successfully logged in as: " + user.name)
         context.telegram_user.db_set("user", user.name)
-        frappe.clear_document_cache(context.telegram_user.doctype, context.telegram_user.name)
         raise DispatcherHandlerStop(state=ConversationHandler.END)
     else:
-        del context.user_data["email"]
         update.message.reply_text("You have entered invalid credentials. Please try again")
-        return ask_email(update, context)
+        return collect_login_credentials(update, context)
+
+
+def collect_signup_details(update: Update, context: CallbackContext):
+    details = collect_conversation_details(
+        key="signup_details",
+        meta=[
+            dict(label="First Name", key="first_name", type="str"),
+            dict(label="Last Name", key="last_name", type="str"),
+            dict(key="email", label="Email", type="regex", options=r"^.+\@.+\..+$"),
+            dict(key="pwd", label="Password", type="password"),
+            # dict(key="gender", label="Gender", type="select", options="Male\nFemale"),
+        ],
+        update=update,
+        context=context,
+    )
+    if not details.get("_is_complete"):
+        raise DispatcherHandlerStop(state=ENTERING_SIGNUP_DETAILS)
+
+    user = frappe.get_doc(dict(
+        doctype="User",
+        email=details.email,
+        first_name=details.first_name,
+        last_name=details.last_name,
+        enabled=1,
+        new_password=details.pwd,
+        send_welcome_email=0,
+    ))
+    user.flags.telegram_user_signup = True
+    user.insert(ignore_permissions=True)
+
+    context.telegram_user.db_set("user", user.name)
+    update.effective_chat.send_message(
+        frappe._("You have successfully signed up as: {0}").format(
+            user.name))
+
+    return ConversationHandler.END
 
 
 def verify_credentials(email, pwd):
