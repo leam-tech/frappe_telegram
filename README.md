@@ -33,6 +33,7 @@ A simple chat-page within frappe just for your telegram-bots
 - [Running in DEV mode](./docs/dev_setup.md)
 - [Supported Hooks for Customization](./docs/hooks.md)
 - [Setting up for Production](./docs/production.md)
+- [Meta Conversation Driver](./docs/meta_conversation_driver.md)
 - ⏳ Example: Login Notifier
 - ⏳ Example: Activity Notifier
 
