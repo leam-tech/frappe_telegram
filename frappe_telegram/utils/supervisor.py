@@ -1,5 +1,7 @@
 import os
 import configparser
+
+import frappe
 from frappe.utils import get_bench_path, get_site_path
 
 
@@ -12,6 +14,11 @@ We will have a new process group for all the telegram-bots
 def add_supervisor_entry(
         telegram_bot, polling=False, poll_interval=0,
         webhook=False, webhook_port=0, webhook_url=None):
+
+    # Validate telegram_bot exists
+    if not frappe.db.exists("Telegram Bot", telegram_bot):
+        frappe.throw("TelegramBot: {} do not exist".format(telegram_bot))
+
     config = get_supervisor_config()
 
     # Program
@@ -49,7 +56,9 @@ def remove_supervisor_entry(telegram_bot):
     if group_name in config:
         bot_programs = config[group_name]["programs"].split(",")
 
-    bot_programs.remove(program_name.replace("program:", ""))
+    group_program_name = program_name.replace("program:", "")
+    if group_program_name in bot_programs:
+        bot_programs.remove(group_program_name)
 
     if len(bot_programs):
         config[group_name] = {"programs": ",".join(bot_programs)}
@@ -63,7 +72,7 @@ def get_bot_program(config, telegram_bot, **kwargs):
     program_name = get_bot_program_name(telegram_bot)
     logs = get_bot_log_paths(telegram_bot)
 
-    command = "bench telegram start-bot " + telegram_bot
+    command = f"bench --site {frappe.local.site} telegram start-bot " + telegram_bot
     for k, v in kwargs.items():
         if not v:
             continue
