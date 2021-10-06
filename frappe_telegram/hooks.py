@@ -18,6 +18,7 @@ fixtures = [
 ]
 
 telegram_bot_handler = [
+    "frappe_telegram.handlers.start.setup",
     "frappe_telegram.handlers.auth.setup",
 ]
 
