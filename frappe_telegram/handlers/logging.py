@@ -3,7 +3,7 @@ import frappe
 from frappe_telegram import Update, CallbackContext, Message
 
 
-def logger_handler(update: Update, context: CallbackContext):
+def handler(update: Update, context: CallbackContext):
     if not hasattr(update, "effective_user"):
         return
     context.telegram_bot = frappe.get_cached_doc("Telegram Bot", context.bot.telegram_bot)
@@ -24,7 +24,7 @@ def log_outgoing_message(telegram_bot: str, result: Union[bool, Message]):
         content = "Sent file: " + result.document.file_name
     else:
         content = ""
-    
+
     msg = frappe.get_doc(
         doctype="Telegram Message",
         chat=frappe.db.get_value("Telegram Chat", {"chat_id": result.chat_id}),

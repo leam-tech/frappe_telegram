@@ -15,7 +15,7 @@ ENTERING_SIGNUP_DETAILS = frappe.generate_hash()
 
 
 def attach_conversation_handler(telegram_bot, updater: Updater):
-    from .auth import AUTH_HANDLER_GROUP
+    from . import AUTH_HANDLER_GROUP
     # Login Conversation
     updater.dispatcher.add_handler(ConversationHandler(
         entry_points=[

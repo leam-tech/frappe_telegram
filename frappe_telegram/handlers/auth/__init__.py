@@ -1,12 +1,12 @@
 import frappe
 from frappe_telegram import Update, CallbackContext, Updater, MessageHandler
-from .login import login_handler
+from .credentials import login_handler, attach_conversation_handler
 
 AUTH_HANDLER_GROUP = -100
 
 
 def setup(telegram_bot, updater: Updater):
-    from .auth import AUTH_HANDLER_GROUP
+    attach_conversation_handler(telegram_bot=telegram_bot, updater=updater)
     updater.dispatcher.add_handler(MessageHandler(None, authenticate), group=AUTH_HANDLER_GROUP)
 
 

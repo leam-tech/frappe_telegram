@@ -1,14 +1,14 @@
-from telegram.bot import Bot
-
 import frappe
+from frappe_telegram import Bot, ParseMode
 from frappe_telegram.handlers.logging import log_outgoing_message
-from telegram.parsemode import ParseMode
+
 
 """
 The functions defined here is provided to invoke the bot
 without Updaters & Dispatchers. This is helpful for triggering
 bot interactions via Hooks / Controller methods
 """
+
 
 def send_message(message_text: str, parse_mode=None, user=None, telegram_user=None, from_bot=None):
     '''
@@ -22,7 +22,7 @@ def send_message(message_text: str, parse_mode=None, user=None, telegram_user=No
 
     if parse_mode:
         if parse_mode not in \
-          [value for name, value in vars(ParseMode).items() if not name.startswith('_')]:
+                [value for name, value in vars(ParseMode).items() if not name.startswith('_')]:
             raise ValueError("Please use a valid ParseMode constant.")
 
     telegram_user_id = get_telegram_user_id(user=user, telegram_user=telegram_user)
@@ -32,6 +32,7 @@ def send_message(message_text: str, parse_mode=None, user=None, telegram_user=No
     bot = get_bot(from_bot)
     message = bot.send_message(telegram_user_id, text=message_text, parse_mode=parse_mode)
     log_outgoing_message(telegram_bot=from_bot, result=message)
+
 
 def send_file(file, filename=None, message=None, user=None, telegram_user=None, from_bot=None):
     '''
