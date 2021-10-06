@@ -27,7 +27,9 @@ def add_supervisor_entry(
     if group_name in config:
         bot_programs = config[group_name]["programs"].split(",")
 
-    bot_programs.append(program_name.replace("program:", ""))
+    group_program_name = program_name.replace("program:", "")
+    if group_program_name not in bot_programs:
+        bot_programs.append(group_program_name)
     config[group_name] = {"programs": ",".join(bot_programs)}
 
     write_supervisor_config(config)
