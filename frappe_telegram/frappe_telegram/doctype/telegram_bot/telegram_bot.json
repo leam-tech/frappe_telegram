@@ -7,7 +7,12 @@
  "field_order": [
   "title",
   "username",
-  "api_token"
+  "api_token",
+  "section_break_4",
+  "webhook_url",
+  "webhook_port",
+  "column_break_7",
+  "webhook_nginx_path"
  ],
  "fields": [
   {
@@ -29,11 +34,36 @@
    "fieldname": "username",
    "fieldtype": "Data",
    "label": "Username"
+  },
+  {
+   "fieldname": "section_break_4",
+   "fieldtype": "Section Break",
+   "label": "Webhooks"
+  },
+  {
+   "fieldname": "webhook_url",
+   "fieldtype": "Data",
+   "label": "Webhook URL"
+  },
+  {
+   "default": "8080",
+   "fieldname": "webhook_port",
+   "fieldtype": "Int",
+   "label": "Webhook Port"
+  },
+  {
+   "fieldname": "column_break_7",
+   "fieldtype": "Column Break"
+  },
+  {
+   "fieldname": "webhook_nginx_path",
+   "fieldtype": "Data",
+   "label": "NGINX Path"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-07-27 05:55:36.128172",
+ "modified": "2021-10-06 20:24:53.351757",
  "modified_by": "Administrator",
  "module": "Frappe Telegram",
  "name": "Telegram Bot",
