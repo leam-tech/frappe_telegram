@@ -2,8 +2,7 @@ import os
 import configparser
 
 import frappe
-from frappe.utils import get_bench_path, get_site_path
-
+from .bench import get_bench_path, get_bench_name, get_site_path
 
 """
 supervisor.conf follows configparser format (Win-INI style)
@@ -138,7 +137,3 @@ def get_bot_program_name(telegram_bot):
 
 def get_bot_group_name():
     return f"group:{get_bench_name()}-telegram-bots"
-
-
-def get_bench_name():
-    return os.path.basename(os.path.abspath(get_bench_path()))

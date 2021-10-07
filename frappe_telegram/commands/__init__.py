@@ -124,8 +124,61 @@ def supervisor_remove(context, telegram_bot):
     frappe.destroy()
 
 
+@click.command("nginx-add")
+@click.argument("telegram_bot")
+@click.option("--webhook-port", type=int, default=0,
+              help="The port to listen on for webhook events. Default is 8080")
+@click.option("--webhook-url", type=str,
+              help="Explicitly specify webhook URL. Useful for NAT, reverse-proxy etc")
+@click.option("--nginx-path", type=str,
+              help="Use custom nginx path for webhook reverse-proxy")
+@pass_context
+def nginx_add(context, telegram_bot, webhook_port=None, webhook_url=None, nginx_path=None):
+    """
+    Modifies existing nginx-config for telegram-webhook support.
+    You can specify webhook url, port & nginx_path to override existing value in TelegramBot Doc
+
+    \b
+    Args:
+        webhook_port: Specify the port to override
+        webhook_url: Specify the url to override existing webhook_url
+        nginx_path: Use custom path in nginx location block
+    """
+    from frappe_telegram.utils.nginx import add_nginx_config
+
+    site = get_site(context)
+    frappe.init(site=site)
+    frappe.connect()
+
+    add_nginx_config(
+        telegram_bot=telegram_bot,
+        webhook_url=webhook_url,
+        webhook_port=webhook_port,
+        webhook_nginx_path=nginx_path)
+    frappe.destroy()
+
+
+@click.command("nginx-remove")
+@click.argument("telegram_bot")
+@pass_context
+def nginx_remove(context, telegram_bot):
+    """
+    Removes nginx-config modifications made for telegram_bot
+    """
+    from frappe_telegram.utils.nginx import remove_nginx_config
+
+    site = get_site(context)
+    frappe.init(site=site)
+    frappe.connect()
+
+    remove_nginx_config(telegram_bot=telegram_bot)
+    frappe.destroy()
+
+
 telegram.add_command(start_bot)
 telegram.add_command(list_bots)
 telegram.add_command(supervisor_add)
 telegram.add_command(supervisor_remove)
+telegram.add_command(nginx_add)
+telegram.add_command(nginx_remove)
 commands = [telegram]
