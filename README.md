@@ -34,7 +34,7 @@ A simple chat-page within frappe just for your telegram-bots
 - [Supported Hooks for Customization](./docs/hooks.md)
 - [Setting up for Production](./docs/production.md)
 - [Meta Conversation Driver](./docs/meta_conversation_driver.md)
-- ⏳ Example: Login Notifier
+- [Example: Login Notifier](./docs/login_notifier.md)
 - ⏳ Example: Activity Notifier
 
 #### License
