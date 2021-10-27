@@ -74,7 +74,7 @@ def get_recipients(notification, doc, context):
         if recipient.receiver_by_role:
             users = [x.parent for x in frappe.get_all(
                 "Has Role",
-                filters={"role": recipient.receiver_by_role},
+                filters={"role": recipient.receiver_by_role, "parenttype": "User"},
                 fields=["parent"])]
             recipients.extend(users)
 
