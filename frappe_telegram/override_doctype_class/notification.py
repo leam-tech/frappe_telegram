@@ -46,6 +46,7 @@ def send_telegram_notification(notification, doc):
             queue="short",
             message_text=message_text,
             user=user,
+            enqueue_after_commit=True
         )
 
 
