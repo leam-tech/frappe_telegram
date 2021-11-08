@@ -20,8 +20,15 @@ class TelegramBot(Document):
 
     def after_delete(self):
         default_bot = frappe.db.get_default(DEFAULT_TELEGRAM_BOT_KEY)
+
         if default_bot == self.title:
-            frappe.db.set_default(DEFAULT_TELEGRAM_BOT_KEY, frappe.get_value("Telegram Bot", {}))
+            new_default_bot = frappe.get_value("Telegram Bot", {})
+            frappe.db.set_default(DEFAULT_TELEGRAM_BOT_KEY, new_default_bot)
+
+            if new_default_bot:
+                frappe.msgprint(
+                    frappe._(f"Set {new_default_bot} as the default bot for notifications.")
+                )
 
     def set_nginx_path(self):
         if self.webhook_nginx_path:
