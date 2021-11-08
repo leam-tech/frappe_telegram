@@ -8,6 +8,8 @@
   "title",
   "username",
   "api_token",
+  "column_break_4",
+  "mark_as_default",
   "section_break_4",
   "webhook_url",
   "webhook_port",
@@ -59,11 +61,21 @@
    "fieldname": "webhook_nginx_path",
    "fieldtype": "Data",
    "label": "NGINX Path"
+  },
+  {
+   "fieldname": "mark_as_default",
+   "fieldtype": "Button",
+   "label": "Mark as Default",
+   "options": "mark_as_default"
+  },
+  {
+   "fieldname": "column_break_4",
+   "fieldtype": "Column Break"
   }
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-10-06 20:24:53.351757",
+ "modified": "2021-11-08 07:34:23.375053",
  "modified_by": "Administrator",
  "module": "Frappe Telegram",
  "name": "Telegram Bot",

@@ -1,6 +1,7 @@
 import frappe
 from frappe.email.doctype.notification.notification import Notification, get_context
 from frappe_telegram.client import send_message
+from frappe_telegram.frappe_telegram.doctype.telegram_bot import DEFAULT_TELEGRAM_BOT_KEY
 
 
 """
@@ -40,12 +41,17 @@ def send_telegram_notification(notification, doc):
 
     message_text = frappe.render_template(notification.message, context)
 
+    from_bot = notification.bot_to_send_from
+    if not from_bot:
+        from_bot = frappe.db.get_default(DEFAULT_TELEGRAM_BOT_KEY)
+
     for user in users:
         frappe.enqueue(
             method=send_message,
             queue="short",
             message_text=message_text,
             user=user,
+            from_bot=from_bot,
             enqueue_after_commit=True
         )
 
