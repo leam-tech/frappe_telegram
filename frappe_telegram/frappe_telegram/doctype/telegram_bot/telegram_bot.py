@@ -16,7 +16,7 @@ class TelegramBot(Document):
     def after_insert(self):
         default_bot = frappe.db.get_default(DEFAULT_TELEGRAM_BOT_KEY)
         if not default_bot:
-            frappe.db.set_default(DEFAULT_TELEGRAM_BOT_KEY, self.title)
+            self.mark_as_default()
 
     def after_delete(self):
         default_bot = frappe.db.get_default(DEFAULT_TELEGRAM_BOT_KEY)
