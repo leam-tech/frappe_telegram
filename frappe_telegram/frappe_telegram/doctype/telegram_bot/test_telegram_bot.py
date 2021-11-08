@@ -100,3 +100,38 @@ class TestTelegramBot(unittest.TestCase):
 
         # Check that default was set to none
         self.assertIsNone(frappe.db.get_default(DEFAULT_TELEGRAM_BOT_KEY))
+
+    def test_mark_as_default(self):
+        """
+        Test the behavior of mark_as_default
+        """
+
+        existing_bots = frappe.get_all("Telegram Bot")
+        self.assertEqual(len(existing_bots), 0)  # Test assumes there are no bots existing
+
+        # Check the current default
+        self.assertIsNone(frappe.db.get_default(DEFAULT_TELEGRAM_BOT_KEY))
+
+        # Load the unsaved fixtures
+        fixture_bots = self.telegram_bots.fixtures.get("Telegram Bot")
+
+        # Insert one
+        bot1 = fixture_bots[0]
+        bot1.insert()
+
+        # Check if it has been made default
+        self.assertEqual(frappe.db.get_default(DEFAULT_TELEGRAM_BOT_KEY), bot1.title)
+
+        # Insert another
+        bot2 = fixture_bots[1]
+        bot2.insert()
+
+        # Check that the default is unchanged
+        self.assertEqual(frappe.db.get_default(DEFAULT_TELEGRAM_BOT_KEY), bot1.title)
+
+        # Run mark_as_default on the second one
+        bot2.reload()
+        bot2.mark_as_default()
+
+        # Check that the default is unchanged
+        self.assertEqual(frappe.db.get_default(DEFAULT_TELEGRAM_BOT_KEY), bot2.title)
