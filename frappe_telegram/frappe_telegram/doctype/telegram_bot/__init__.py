@@ -1,1 +1,1 @@
-DEFAULT_TELEGRAM_BOT_KEY = "default_telegram_bot_key"
+DEFAULT_TELEGRAM_BOT_KEY = "default_telegram_bot"

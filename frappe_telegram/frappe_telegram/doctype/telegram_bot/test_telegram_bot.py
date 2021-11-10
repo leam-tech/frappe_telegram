@@ -5,7 +5,7 @@ import unittest
 
 import frappe
 from frappe_telegram.frappe_telegram.doctype.telegram_bot import DEFAULT_TELEGRAM_BOT_KEY
-from frappe_testing.test_fixture import TestFixture
+from frappe_telegram.utils.test_fixture import TestFixture
 
 
 class TelegramBotFixtures(TestFixture):
