@@ -20,7 +20,11 @@ fixtures = [
     {
         "dt": "Role",
         "filters": [["name", "in", ["Telegram Bot Manager", "Telegram Bot User"]]]
-    }
+    },
+    {
+        "dt": "Custom Field",
+        "filters": [["app_name", "=", "frappe_telegram"]]
+    },
 ]
 
 telegram_bot_handler = [
