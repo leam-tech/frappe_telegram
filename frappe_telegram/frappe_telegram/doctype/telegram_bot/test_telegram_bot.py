@@ -59,7 +59,7 @@ class TestTelegramBot(unittest.TestCase):
         self.assertEqual(len(existing_bots), 0)  # Test assumes there are no bots existing
 
         # Check the current default
-        self.assertIsNone(frappe.db.get_default(DEFAULT_TELEGRAM_BOT_KEY))
+        self.assertIsNone(frappe.db.get_default(DEFAULT_TELEGRAM_BOT_KEY))  # No bots == no default
 
         # Load the unsaved fixtures
         fixture_bots = self.telegram_bots.fixtures.get("Telegram Bot")
@@ -113,7 +113,7 @@ class TestTelegramBot(unittest.TestCase):
         self.assertIsNone(frappe.db.get_default(DEFAULT_TELEGRAM_BOT_KEY))
 
         # Load the unsaved fixtures
-        fixture_bots = self.telegram_bots.fixtures.get("Telegram Bot")
+        fixture_bots = self.telegram_bots.fixtures.get("Telegram Bot")  # No bots == no default
 
         # Insert one
         bot1 = fixture_bots[0]
