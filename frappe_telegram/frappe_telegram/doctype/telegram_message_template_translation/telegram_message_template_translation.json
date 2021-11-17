@@ -1,0 +1,41 @@
+{
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2021-11-15 20:47:24.219471",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "language",
+  "template"
+ ],
+ "fields": [
+  {
+   "fieldname": "language",
+   "fieldtype": "Data",
+   "in_list_view": 1,
+   "label": "Language",
+   "reqd": 1,
+   "unique": 1
+  },
+  {
+   "description": "Use Jinja tags to represent dynamic fields, like so: {{variable}}",
+   "fieldname": "template",
+   "fieldtype": "Code",
+   "in_list_view": 1,
+   "label": "Template"
+  }
+ ],
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2021-11-16 09:49:23.092906",
+ "modified_by": "Administrator",
+ "module": "Frappe Telegram",
+ "name": "Telegram Message Template Translation",
+ "owner": "Administrator",
+ "permissions": [],
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "track_changes": 1
+}
