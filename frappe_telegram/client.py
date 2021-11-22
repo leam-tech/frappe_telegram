@@ -91,6 +91,7 @@ def get_bot(telegram_bot) -> Bot:
     )
 
 
+@frappe.whitelist()
 def send_message_from_template(template: str, context: dict = {}, lang: str = None,
                                parse_mode=None, user=None, telegram_user=None, from_bot=None):
     """
@@ -106,31 +107,24 @@ def send_message_from_template(template: str, context: dict = {}, lang: str = No
 
     dt = "Telegram Message Template"
 
-    filters = [
-        ["name", "=", template],
-    ]
-    if lang:
-        filters.append(["Telegram Message Template Translation", "language", "=", lang])
-
     templates = frappe.get_all(
         dt,
-        filters=filters
+        filters=[{"name": template}]
     )
 
     if not templates:
-        if lang:
-            frappe.throw(_("No template with name '{0}' and language '{1}' exists.").format(
-                template, lang))
-        else:
-            frappe.throw(_("No template with name '{0}' exists.").format(template))
+        frappe.throw(_("No template with name '{0}' exists.").format(template))
 
     template_doc = frappe.get_doc(dt, templates[0].name)
+
+    template = ""
 
     if lang:
         for translation in template_doc.template_translations:
             if translation.language == lang:
                 template = translation.template
-    else:
+
+    if not template:
         template = template_doc.default_template
 
     send_message(render_template(template, context), parse_mode, user, telegram_user, from_bot)
