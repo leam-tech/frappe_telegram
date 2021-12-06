@@ -5,7 +5,6 @@ from frappe_telegram import Bot, ParseMode
 from frappe_telegram.frappe_telegram.doctype.telegram_bot import DEFAULT_TELEGRAM_BOT_KEY
 from frappe_telegram.handlers.logging import log_outgoing_message
 
-
 """
 The functions defined here is provided to invoke the bot
 without Updaters & Dispatchers. This is helpful for triggering
@@ -22,17 +21,16 @@ def send_message(message_text: str, parse_mode=None, user=None, telegram_user=No
     parse_mode: `ParseMode`
         Choose styling for your message using a ParseMode class constant. Default is `None`
     user: `str`
-        Can optionally be used to reslove `telegram_user` using a User linked to a Telegram User
+        Can optionally be used to resolve `telegram_user` using a User linked to a Telegram User
     telegram_user: `str`
         Selects the Telegram User to send the message to. Can be skipped if `user` is set
     from_bot: `str`
         Explicitly specify a bot name to send message from; the default is used if none specified
     """
 
-    if parse_mode:
-        if parse_mode not in \
-                [value for name, value in vars(ParseMode).items() if not name.startswith('_')]:
-            raise ValueError("Please use a valid ParseMode constant.")
+    if parse_mode and parse_mode not in [value for name, value in vars(ParseMode).items() if
+                                         not name.startswith('_')]:
+        raise ValueError("Please use a valid ParseMode constant.")
 
     telegram_user_id = get_telegram_user_id(user=user, telegram_user=telegram_user)
     if not from_bot:
@@ -92,7 +90,7 @@ def get_bot(telegram_bot) -> Bot:
 
 
 @frappe.whitelist()
-def send_message_from_template(template: str, context: dict = {}, lang: str = None,
+def send_message_from_template(template: str, context: dict = None, lang: str = None,
                                parse_mode=None, user=None, telegram_user=None, from_bot=None):
     """
     Use a Telegram Message Template to send a message
@@ -100,7 +98,7 @@ def send_message_from_template(template: str, context: dict = {}, lang: str = No
     template: `str`
         Name of a Telegram Message Template
     context: `dict`
-        dict of key:values to reslove the tags in the template
+        dict of key:values to resolve the tags in the template
     lang: `str`
         Optionally can be set if an alternative template language is needed
     """
@@ -116,6 +114,9 @@ def send_message_from_template(template: str, context: dict = {}, lang: str = No
         frappe.throw(_("No template with name '{0}' exists.").format(template))
 
     template_doc = frappe.get_doc(dt, templates[0].name)
+
+    if not context:
+        context = {}
 
     template = ""
 
