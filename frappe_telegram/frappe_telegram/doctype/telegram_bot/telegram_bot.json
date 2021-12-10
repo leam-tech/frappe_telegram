@@ -35,7 +35,9 @@
   {
    "fieldname": "username",
    "fieldtype": "Data",
-   "label": "Username"
+   "label": "Username",
+   "read_only": 1,
+   "unique": 1
   },
   {
    "fieldname": "section_break_4",
@@ -75,7 +77,7 @@
  ],
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2021-11-08 07:34:23.375053",
+ "modified": "2021-12-10 07:21:41.786444",
  "modified_by": "Administrator",
  "module": "Frappe Telegram",
  "name": "Telegram Bot",
