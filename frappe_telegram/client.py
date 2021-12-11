@@ -2,6 +2,7 @@ import frappe
 from frappe import _
 from frappe.utils.jinja import render_template
 from frappe_telegram import Bot, ParseMode
+from frappe_telegram.utils.formatting import strip_unsupported_html_tags
 from frappe_telegram.frappe_telegram.doctype.telegram_bot import DEFAULT_TELEGRAM_BOT_KEY
 from frappe_telegram.handlers.logging import log_outgoing_message
 
@@ -31,6 +32,10 @@ def send_message(message_text: str, parse_mode=None, user=None, telegram_user=No
     if parse_mode and parse_mode not in [value for name, value in vars(ParseMode).items() if
                                          not name.startswith('_')]:
         raise ValueError("Please use a valid ParseMode constant.")
+
+    if parse_mode == ParseMode.HTML:
+        # Telegram API throws error if not formatted properly
+        message_text = strip_unsupported_html_tags(message_text)
 
     telegram_user_id = get_telegram_user_id(user=user, telegram_user=telegram_user)
     if not from_bot:

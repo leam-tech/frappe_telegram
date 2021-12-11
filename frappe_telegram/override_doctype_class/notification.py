@@ -46,12 +46,16 @@ def send_telegram_notification(notification, doc):
         from_bot = frappe.db.get_default(DEFAULT_TELEGRAM_BOT_KEY)
 
     for user in users:
+        if not frappe.db.exists("Telegram User", {"user": user}):
+            continue
+
         frappe.enqueue(
             method=send_message,
             queue="short",
             message_text=message_text,
             user=user,
             from_bot=from_bot,
+            parse_mode="HTML",
             enqueue_after_commit=True
         )
 
