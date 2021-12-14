@@ -1,10 +1,6 @@
 import frappe
 
 
-def after_migrate():
-    add_telegram_notification_channel()
-
-
 def add_telegram_notification_channel():
     """
     This will add Telegram to existing list of Channels.

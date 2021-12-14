@@ -10,7 +10,8 @@ app_email = "info@leam.ae"
 app_license = "MIT"
 
 
-after_migrate = "frappe_telegram.setup.after_migrate.after_migrate"
+after_install = "frappe_telegram.setup.after_install"
+after_migrate = "frappe_telegram.setup.after_migrate"
 
 override_doctype_class = {
     "Notification": "frappe_telegram.override_doctype_class.TelegramNotification"
