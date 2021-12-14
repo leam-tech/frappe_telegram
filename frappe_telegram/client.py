@@ -61,7 +61,7 @@ def send_file(file, filename=None, message=None, user=None, telegram_user=None, 
     telegram_user_id = get_telegram_user_id(
         user=user, telegram_user=telegram_user)
     if not from_bot:
-        from_bot = frappe.get_value("Telegram Bot", {})
+        from_bot = frappe.db.get_default(DEFAULT_TELEGRAM_BOT_KEY)
 
     bot = get_bot(from_bot)
     result = bot.send_document(telegram_user_id, document=file, filename=filename, caption=message)
