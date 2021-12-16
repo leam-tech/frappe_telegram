@@ -47,7 +47,7 @@ def send_message(message_text: str, parse_mode=None, user=None, telegram_user=No
     message = bot.send_message(telegram_user_id, text=message_text, parse_mode=parse_mode)
     log_outgoing_message(telegram_bot=from_bot, result=message)
 
-@frappe.whitelist()
+
 def send_file(file, filename=None, message=None, user=None, telegram_user=None, from_bot=None):
     """
     Send a file to the bot
@@ -66,34 +66,17 @@ def send_file(file, filename=None, message=None, user=None, telegram_user=None, 
         from_bot = frappe.db.get_default(DEFAULT_TELEGRAM_BOT_KEY)
 
     if isinstance(file, File):
+        file = file.file_url
 
-        file_path = frappe.get_site_path(
-            (("" if "/private/" in file.file_url else "/public") + file.file_url).strip("/"))
-
-        if os.path.exists(file_path):
-            file = open(file_path, 'rb')
-        else:
-            frappe.throw(frappe._("File specified in the File doc does not exist."),
-                         exc=FileNotFoundError)
-    elif isinstance(file, str) and "/files/" in file:
+    if isinstance(file, str) and "/files/" in file:
 
         # If file is string, check that the url is internal
 
-        files = frappe.get_all(
-            "File",
-            filters=[["file_url", "=", file]]
-        )
+        file_path = frappe.get_site_path(
+            (("" if "/private/" in file else "/public") + file).strip("/"))
 
-        if files:
-            file_path = frappe.get_site_path(
-                (("" if "/private/" in file else "/public") + file).strip("/"))
-
-            if os.path.exists(file_path):
-                file = open(file_path, 'rb')
-            else:
-                frappe.throw(frappe._("File specified in the file_url does not exist."),
-                             exc=FileNotFoundError)
-
+        if os.path.exists(file_path):
+            file = open(file_path, 'rb')
 
     bot = get_bot(from_bot)
     result = bot.send_document(telegram_user_id, document=file, filename=filename, caption=message)
