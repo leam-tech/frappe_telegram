@@ -52,8 +52,9 @@ def send_file(file, filename=None, message=None, user=None, telegram_user=None, 
     """
     Send a file to the bot
 
-    file: (`str` | `filelike object` | `bytes` | `pathlib.Path` | `telegram.Document` | `File Doc`)
-        The file can be either a file_id, a URL, a File doc or a file from disk
+    file: (`str` | `filelike object` | `bytes` | `pathlib.Path` | `telegram.Document` | `frappe.File`)
+        The file can be an internal file path, a telegram file_id, a URL, a File doc or a file from disk.
+            internal file path examples: "/files/example.png", "/private/files/example.png"
     filename: `str`
         Specify custom file name
     message: `str`
