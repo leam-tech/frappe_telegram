@@ -45,6 +45,11 @@ def send_telegram_notification(notification, doc):
     if not from_bot:
         from_bot = frappe.db.get_default(DEFAULT_TELEGRAM_BOT_KEY)
 
+    if notification.attach_print:
+        attachment = notification.get_attachment(doc)[0]
+        attachment.pop("print_format_attachment")
+        print_file = frappe.attach_print(**attachment)
+
     for user in users:
         if not frappe.db.exists("Telegram User", {"user": user}):
             continue
@@ -60,11 +65,6 @@ def send_telegram_notification(notification, doc):
         )
 
         if notification.attach_print:
-
-            attachment = notification.get_attachment(doc)[0]
-            attachment.pop("print_format_attachment")
-            print_file = frappe.attach_print(**attachment)
-
             frappe.enqueue(
                 method=send_file,
                 queue="short",
