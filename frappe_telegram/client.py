@@ -1,5 +1,7 @@
+import os
 import frappe
 from frappe import _
+from frappe.core.doctype.file.file import File
 from frappe.utils.jinja import render_template
 from frappe_telegram import Bot, ParseMode
 from frappe_telegram.utils.formatting import strip_unsupported_html_tags
@@ -50,8 +52,9 @@ def send_file(file, filename=None, message=None, user=None, telegram_user=None, 
     """
     Send a file to the bot
 
-    file: (`str` | `filelike object` | `bytes` | `pathlib.Path` | `telegram.Document`)
-        The file can be either a file_id, a URL or a file from disk
+    file: (`str` | `filelike object` | `bytes` | `pathlib.Path` | `telegram.Document` | `frappe.File`)
+        The file can be an internal file path, a telegram file_id, a URL, a File doc or a file from disk.
+            internal file path examples: "/files/example.png", "/private/files/example.png"
     filename: `str`
         Specify custom file name
     message: `str`
@@ -62,6 +65,19 @@ def send_file(file, filename=None, message=None, user=None, telegram_user=None, 
         user=user, telegram_user=telegram_user)
     if not from_bot:
         from_bot = frappe.db.get_default(DEFAULT_TELEGRAM_BOT_KEY)
+
+    if isinstance(file, File):
+        file = file.file_url
+
+    if isinstance(file, str) and "/files/" in file:
+
+        # If file is string, check that the url is internal
+
+        file_path = frappe.get_site_path(
+            (("" if "/private/" in file else "/public") + file).strip("/"))
+
+        if os.path.exists(file_path):
+            file = open(file_path, 'rb')
 
     bot = get_bot(from_bot)
     result = bot.send_document(telegram_user_id, document=file, filename=filename, caption=message)
