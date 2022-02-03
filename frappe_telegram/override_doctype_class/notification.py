@@ -1,6 +1,6 @@
 import frappe
 from frappe.email.doctype.notification.notification import Notification, get_context
-from frappe_telegram.client import send_message
+from frappe_telegram.client import send_file, send_message
 from frappe_telegram.frappe_telegram.doctype.telegram_bot import DEFAULT_TELEGRAM_BOT_KEY
 
 
@@ -45,6 +45,11 @@ def send_telegram_notification(notification, doc):
     if not from_bot:
         from_bot = frappe.db.get_default(DEFAULT_TELEGRAM_BOT_KEY)
 
+    if notification.attach_print:
+        attachment = notification.get_attachment(doc)[0]
+        attachment.pop("print_format_attachment")
+        print_file = frappe.attach_print(**attachment)
+
     for user in users:
         if not frappe.db.exists("Telegram User", {"user": user}):
             continue
@@ -58,6 +63,17 @@ def send_telegram_notification(notification, doc):
             parse_mode="HTML",
             enqueue_after_commit=True
         )
+
+        if notification.attach_print:
+            frappe.enqueue(
+                method=send_file,
+                queue="short",
+                file=print_file.get("fcontent"),
+                filename=print_file.get("fname"),
+                user=user,
+                from_bot=from_bot,
+                enqueue_after_commit=True
+            )
 
 
 def get_recipients(notification, doc, context):
