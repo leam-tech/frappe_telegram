@@ -124,6 +124,22 @@ def send_message_from_template(template: str, context: dict = None, lang: str = 
         Optionally can be set if an alternative template language is needed
     """
 
+    message = render_message_from_template(template, context=context, lang=lang)
+
+    send_message(message, parse_mode, user, telegram_user, from_bot)
+
+
+def render_message_from_template(template: str, context: dict = None, lang: str = None) -> str:
+    """
+    Use a Telegram Message Template to render a message
+
+    template: `str`
+        Name of a Telegram Message Template
+    context: `dict`
+        dict of key:values to resolve the tags in the template
+    lang: `str`
+        Optionally can be set if an alternative template language is needed
+    """
     dt = "Telegram Message Template"
 
     templates = frappe.get_all(
@@ -149,4 +165,4 @@ def send_message_from_template(template: str, context: dict = None, lang: str = 
     if not template:
         template = template_doc.default_template
 
-    send_message(render_template(template, context), parse_mode, user, telegram_user, from_bot)
+    return render_template(template, context)
