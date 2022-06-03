@@ -31,13 +31,7 @@ def send_message(message_text: str, parse_mode=None, user=None, telegram_user=No
         Explicitly specify a bot name to send message from; the default is used if none specified
     """
 
-    if parse_mode and parse_mode not in [value for name, value in vars(ParseMode).items() if
-                                         not name.startswith('_')]:
-        raise ValueError("Please use a valid ParseMode constant.")
-
-    if parse_mode == ParseMode.HTML:
-        # Telegram API throws error if not formatted properly
-        message_text = strip_unsupported_html_tags(message_text)
+    message_text = sanitize_message_text(message_text, parse_mode)
 
     telegram_user_id = get_telegram_user_id(user=user, telegram_user=telegram_user)
     if not from_bot:
@@ -48,7 +42,8 @@ def send_message(message_text: str, parse_mode=None, user=None, telegram_user=No
     log_outgoing_message(telegram_bot=from_bot, result=message)
 
 
-def send_file(file, filename=None, message=None, user=None, telegram_user=None, from_bot=None):
+def send_file(file, filename=None, message=None, parse_mode=None, user=None, telegram_user=None,
+              from_bot=None):
     """
     Send a file to the bot
 
@@ -59,7 +54,11 @@ def send_file(file, filename=None, message=None, user=None, telegram_user=None, 
         Specify custom file name
     message: `str`
         Small text to show alongside the file. 0-1024 characters
+    parse_mode: `ParseMode`
+        Choose styling for your message using a ParseMode class constant. Default is `None`
     """
+
+    message = sanitize_message_text(message, parse_mode)
 
     telegram_user_id = get_telegram_user_id(
         user=user, telegram_user=telegram_user)
@@ -80,7 +79,8 @@ def send_file(file, filename=None, message=None, user=None, telegram_user=None, 
             file = open(file_path, 'rb')
 
     bot = get_bot(from_bot)
-    result = bot.send_document(telegram_user_id, document=file, filename=filename, caption=message)
+    result = bot.send_document(telegram_user_id, document=file, filename=filename, caption=message,
+                               parse_mode=parse_mode)
     log_outgoing_message(telegram_bot=from_bot, result=result)
 
 
@@ -150,3 +150,40 @@ def send_message_from_template(template: str, context: dict = None, lang: str = 
         template = template_doc.default_template
 
     send_message(render_template(template, context), parse_mode, user, telegram_user, from_bot)
+
+
+def validate_parse_mode(parse_mode: ParseMode) -> None:
+    """
+    Validate the parse_mode is a valid ParseMode class constant
+
+    parse_mode: `ParseMode`
+
+    Raises `ValueError` if the parse_mode is not valid
+    """
+    if parse_mode and parse_mode not in [value for name, value in vars(ParseMode).items() if
+                                         not name.startswith('_')]:
+        raise ValueError("Please use a valid ParseMode constant.")
+
+
+def sanitize_message_text(message_text: str, parse_mode: ParseMode = None) -> str:
+    """
+    Sanitize the message text depending on the parse_mode
+
+    message_text: `str`
+        The message text to sanitize
+
+    parse_mode: `ParseMode`
+        The parse_mode to use for sanitizing
+
+    Returns `str`
+    """
+    validate_parse_mode(parse_mode)
+
+    if not parse_mode:
+        return message_text
+
+    if parse_mode == ParseMode.HTML:
+        # Telegram API throws error if not formatted properly
+        return strip_unsupported_html_tags(message_text)
+
+    return message_text
