@@ -95,7 +95,7 @@ def get_recipients(notification, doc, context):
             # field from parent doc
             else:
                 user = doc.get(fields[0])
-                if frappe.db.exists(user):
+                if frappe.db.exists("User", user):
                     recipients.append(user)
 
         if recipient.receiver_by_role:
