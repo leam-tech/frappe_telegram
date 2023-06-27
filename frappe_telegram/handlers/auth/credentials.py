@@ -62,7 +62,7 @@ def collect_login_credentials(update: Update, context: CallbackContext):
 
     if frappe.db.get_value("LDAP Settings", "enabled") and not user.is_authenticated:
         ldap: LDAPSettings = frappe.get_doc("LDAP Settings")
-	    user = ldap.authenticate(details.email, details.pwd)
+        user = ldap.authenticate(details.email, details.pwd)
         if user: user["is_authenticated"] = True
 
     if user and user.is_authenticated:
