@@ -6,6 +6,7 @@ from frappe_telegram import (
     InlineKeyboardMarkup, ConversationHandler, MessageHandler,
     InlineKeyboardButton)
 from frappe_telegram.utils.conversation import collect_conversation_details
+from frappe.integrations.doctype.ldap_settings.ldap_settings import LDAPSettings
 
 LOGIN_CONV_ENTER = frappe.generate_hash()
 SIGNUP_CONV_ENTER = frappe.generate_hash()
@@ -58,6 +59,11 @@ def collect_login_credentials(update: Update, context: CallbackContext):
         raise DispatcherHandlerStop(state=ENTERING_LOGIN_CREDENTIALS)
 
     user = verify_credentials(details.email, details.pwd)
+
+    if frappe.db.get_value("LDAP Settings", "enabled") and not user.is_authenticated:
+        ldap: LDAPSettings = frappe.get_doc("LDAP Settings")
+	    user = ldap.authenticate(details.email, details.pwd)
+        if user: user["is_authenticated"] = True
 
     if user and user.is_authenticated:
         # Authenticated! Lets link FrappeUser & TelegramUser
