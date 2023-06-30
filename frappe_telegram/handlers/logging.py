@@ -18,7 +18,7 @@ def log_outgoing_message(telegram_bot: str, result: Union[bool, Message]):
     if not isinstance(result, Message):
         return
 
-    if result.text:
+    if len(result.text):
         content = result.text
     elif result.document:
         content = "Sent file: " + result.document.file_name
