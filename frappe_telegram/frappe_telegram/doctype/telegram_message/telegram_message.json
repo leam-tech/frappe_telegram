@@ -28,7 +28,7 @@
    "label": "Content",
    "length": 4096,
    "read_only": 1,
-   "reqd": 1
+   "reqd": 0
   },
   {
    "fieldname": "column_break_3",
